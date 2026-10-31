@@ -24,12 +24,20 @@
       'gal.title': 'Each image preserves <em>how you felt</em>, not just how you looked',
       'gal.hint': 'Drag or swipe to explore',
       'c0': 'Waters that hold you', 'c1': 'Wind on the shore', 'c2': 'Fire &amp; shadow', 'c3': 'Into the cave',
-      'c4': 'Sand &amp; laughter', 'c5': 'The ritual begins', 'c6': 'Open arms', 'c7': 'In bloom',
-      'c8': 'Dusk ceremony', 'c9': 'Calling the sun', 'c10': 'Dance with the sea', 'c11': 'Cenote rebirth',
+      'c4': 'Sand &amp; laughter', 'c5': 'The ritual begins', 'c6': 'Open heart', 'c7': 'In bloom',
+      'c8': 'Authentic Self', 'c9': 'Calling the sun', 'c10': 'Dance with the sea', 'c11': 'Cenote rebirth',
       'tav.eyebrow': 'Your photographer',
       'tav.p1': "Photographer and keeper of the ritual. Tavata holds each session with presence: she invites you to slow down, breathe and inhabit your body, while she disappears behind the lens so that only what's true remains.",
       'tav.p2': "Her eye doesn't search for the perfect pose. It searches for the moment you return to yourself.",
       'tav.link': 'See her work on Instagram →',
+      'nav.retreats': 'Retreats',
+      'ev.eyebrow': 'Retreats &amp; gatherings',
+      'ev.title': 'The ritual, <em>shared</em>',
+      'ev.lead': 'Beyond the individual session, Tavata also gathers women in nature to be witnessed together. Here is a glimpse of the retreats she has captured.',
+      'ev1.name': 'Selvática', 'ev1.tag': "Sensoul · Women's retreat",
+      'ev1.desc': 'An invitation to embrace a journey of self-expression and sensual aliveness, held in the jungle.',
+      'ev2.name': 'Slow &amp; Glow', 'ev2.tag': 'Women Retreat',
+      'ev2.desc': 'Yoga, cacao and circle: days to slow down, glow from within and be held by a community of women.',
       'more.eyebrow': 'More than photographs',
       'more.quote': 'A photographic ritual to honor the person you have been and celebrate the one you are becoming.',
       'more.body': 'The courage to choose yourself. The moment you reclaimed your voice. The beauty of being fully present in your own skin. A visual anchor you can return to again and again.',
@@ -55,12 +63,20 @@
       'gal.title': 'Cada imagen guarda <em>cómo te sentiste</em>, no solo cómo te veías',
       'gal.hint': 'Arrastra o desliza para explorar',
       'c0': 'Aguas que te sostienen', 'c1': 'Viento en la orilla', 'c2': 'Fuego y sombra', 'c3': 'Hacia la cueva',
-      'c4': 'Arena y risa', 'c5': 'Comienza el ritual', 'c6': 'Brazos abiertos', 'c7': 'En flor',
-      'c8': 'Ceremonia al atardecer', 'c9': 'Llamando al sol', 'c10': 'Danza con el mar', 'c11': 'Renacer en el cenote',
+      'c4': 'Arena y risa', 'c5': 'Comienza el ritual', 'c6': 'Corazón abierto', 'c7': 'En flor',
+      'c8': 'Tu yo auténtico', 'c9': 'Llamando al sol', 'c10': 'Danza con el mar', 'c11': 'Renacer en el cenote',
       'tav.eyebrow': 'Tu fotógrafa',
       'tav.p1': 'Fotógrafa y guardiana del ritual. Tavata acompaña cada sesión con presencia: te invita a bajar el ritmo, respirar y habitar tu cuerpo, mientras ella desaparece detrás del lente para que solo quede lo verdadero.',
       'tav.p2': 'Su mirada no busca la pose perfecta. Busca el instante en que vuelves a ti.',
       'tav.link': 'Ver su trabajo en Instagram →',
+      'nav.retreats': 'Retiros',
+      'ev.eyebrow': 'Retiros y encuentros',
+      'ev.title': 'El ritual, <em>compartido</em>',
+      'ev.lead': 'Más allá de la sesión individual, Tavata también reúne a mujeres en la naturaleza para ser vistas en comunidad. Un vistazo a los retiros que ha fotografiado.',
+      'ev1.name': 'Selvática', 'ev1.tag': 'Sensoul · Retiro de mujeres',
+      'ev1.desc': 'Una invitación a abrazar un viaje de autoexpresión y vitalidad sensual, en plena selva.',
+      'ev2.name': 'Slow &amp; Glow', 'ev2.tag': 'Retiro de mujeres',
+      'ev2.desc': 'Yoga, cacao y círculo: días para bajar el ritmo, brillar desde dentro y sentirte sostenida por una comunidad de mujeres.',
       'more.eyebrow': 'Más que fotografías',
       'more.quote': 'Un ritual fotográfico para honrar a la persona que has sido y celebrar a la que estás llegando a ser.',
       'more.body': 'El coraje de elegirte. El momento en que recuperaste tu voz. La belleza de estar plenamente presente en tu propia piel. Un ancla visual a la que puedes volver una y otra vez.',
@@ -226,6 +242,20 @@
       });
     }
 
+    // RETIROS — scroll horizontal por evento
+    events.forEach(ev => {
+      const r = ev.el.getBoundingClientRect();
+      if (r.bottom < -vh || r.top > vh * 2) return;
+      const ep = clamp(-r.top / (r.height - vh));
+      ev.track.style.transform = `translateX(${-ep * ev.dist}px)`;
+      ev.bar.style.transform = `scaleX(${ep})`;
+      ev.imgs.forEach(img => {
+        const b = img.parentNode.getBoundingClientRect();
+        if (b.right < 0 || b.left > vw) return;
+        img.style.transform = `scale(1.18) translateX(${-(b.left + b.width / 2 - vw / 2) * 0.05}px)`;
+      });
+    });
+
     // PARALLAX
     parallax.forEach(el => {
       const b = el.getBoundingClientRect();
@@ -270,7 +300,14 @@
   const car = $('.carousel'), cards = $$('.card', car), N = cards.length, countEl = $('.car-count b');
   let pos = 0, target = 0, gap = 300, drag = null, carOn = false;
   const wrapD = d => ((d % N) + N + N / 2) % N - N / 2;
-  function measure() { gap = cards[0].offsetWidth * (innerWidth < 760 ? 0.98 : 1.16); }
+  const events = $$('.event').map(el => ({ el, track: $('.event-track', el), bar: $('.event-bar i', el), imgs: $$('.event-track img', el), dist: 0 }));
+  function measure() {
+    gap = cards[0].offsetWidth * (innerWidth < 760 ? 0.98 : 1.16);
+    events.forEach(ev => {
+      ev.dist = Math.max(0, ev.track.scrollWidth - innerWidth);
+      ev.el.style.height = innerHeight + ev.dist * 1.1 + 'px';
+    });
+  }
 
   function carFrame() {
     pos += (target - pos) * (drag && drag.moved ? 0.25 : 0.085);
@@ -341,18 +378,21 @@
 
   /* ---------- LIGHTBOX ---------- */
   const lb = $('.lightbox'), lbImg = $('img', lb), lbCap = $('.lb-cap', lb);
-  let lbI = 0;
+  let lbI = 0, lbFree = false;
   function showLB(i) {
     lbI = (i + N) % N;
     lbImg.src = $('img', cards[lbI]).src;
     lbCap.textContent = $('figcaption', cards[lbI]).textContent;
   }
-  function openLB(i) { showLB(i); lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); lenis && lenis.stop(); }
+  function openLB(i) { lbFree = false; showLB(i); lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); lenis && lenis.stop(); }
+  function openImg(src) { lbFree = true; lbImg.src = src; lbCap.textContent = ''; lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); lenis && lenis.stop(); }
+  $$('.event-track figure').forEach(f => f.addEventListener('click', () => openImg($('img', f).src)));
   function closeLB() { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); lenis && lenis.start(); }
   lb.addEventListener('click', e => { if (e.target !== lbImg) closeLB(); });
   addEventListener('keydown', e => {
     if (!lb.classList.contains('open')) return;
     if (e.key === 'Escape') closeLB();
+    if (lbFree) return;
     if (e.key === 'ArrowRight') { showLB(lbI + 1); target = Math.round(target) + 1; }
     if (e.key === 'ArrowLeft') { showLB(lbI - 1); target = Math.round(target) - 1; }
   });
